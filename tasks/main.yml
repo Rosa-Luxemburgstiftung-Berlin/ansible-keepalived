@@ -325,6 +325,39 @@
   tags:
     - skip_ansible_lint
 
+- debug:
+    var: configchanged | default(false)
+- debug:
+    var: checkscriptschanged | default(false)
+- debug:
+    var: notifyscriptschanged | default(false)
+- debug:
+    var: masternotifyscriptschanged | default(false)
+- debug:
+    var: backupnotifyscriptschanged | default(false)
+- debug:
+    var: failurenotifyscriptschanged | default(false)
+- debug:
+    var: notifyscriptschanged2 | default(false)
+- debug:
+    var: masternotifyscriptschanged2 | default(false)
+- debug:
+    var: masternotifyscriptschanged3 | default(false)
+- debug:
+    var: backupnotifyscriptschanged2 | default(false)
+- debug:
+    var: stopvrrpnotifyscriptschanged | default(false)
+- debug:
+    var: failurenotifyscriptschanged | default(false)
+- debug:
+    var: packagechanged | default(false)
+- debug:
+    var: configchanged2 | default(false)
+- debug:
+    var: overridechanged | default(false)
+- debug:
+    var: overridechanged2 | default(false)
+
 - name: register service reload required
   set_fact:
     keepalived_service_state: reloaded

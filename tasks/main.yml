@@ -42,8 +42,7 @@
   tags:
     - keepalived-apt-packages
     - keepalived-packages
-  notify:
-    - restart keepalived
+  register: packagechanged
 
 - name: Ensure no new "samples" folder appeared
   file:
@@ -101,8 +100,7 @@
     mode: "0640"
   tags:
     - keepalived-config
-  notify:
-    - reload keepalived
+  register: configchanged
 
 - name: Check that daemon options file exists
   stat:
@@ -121,8 +119,7 @@
   when: keepalived_daemon_options_file.stat.exists
   tags:
     - keepalived-config
-  notify:
-    - restart keepalived
+  register: configchanged2
 
 - name: Dropping the tracking scripts
   copy:
@@ -133,8 +130,7 @@
   when: item.value.src_check_script is defined
   tags:
     - keepalived-config
-  notify:
-    - reload keepalived
+  register: checkscriptschanged
 
 - name: Dropping the general notification scripts
   copy:
@@ -145,8 +141,7 @@
   when: item.value.src_notify_script is defined
   tags:
     - keepalived-config
-  notify:
-    - reload keepalived
+  register: notifyscriptschanged
 
 - name: Dropping the notification scripts for switching to master
   copy:
@@ -157,8 +152,7 @@
   when: item.value.src_notify_master is defined
   tags:
     - keepalived-config
-  notify:
-    - reload keepalived
+  register: masternotifyscriptschanged
 
 - name: Dropping the notification scripts for switching to backup
   copy:
@@ -169,8 +163,7 @@
   when: item.value.src_notify_backup is defined
   tags:
     - keepalived-config
-  notify:
-    - reload keepalived
+  register: backupnotifyscriptschanged
 
 - name: Dropping the notification scripts for failures
   copy:
@@ -181,8 +174,7 @@
   when: item.value.src_notify_fault is defined
   tags:
     - keepalived-config
-  notify:
-    - reload keepalived
+  register: failurenotifyscriptschanged
 
 - name: Dropping the general notification scripts (instances)
   copy:
@@ -193,8 +185,7 @@
   when: item.value.src_notify_script is defined
   tags:
     - keepalived-config
-  notify:
-    - reload keepalived
+  register: notifyscriptschanged2
 
 - name: Dropping the notification scripts for switching to master (instances)
   copy:
@@ -205,8 +196,7 @@
   when: item.value.src_notify_master is defined
   tags:
     - keepalived-config
-  notify:
-    - reload keepalived
+  register: masternotifyscriptschanged2
 
 - name: Dropping the notification scripts for lower priority master case (instances)
   copy:
@@ -217,8 +207,7 @@
   when: item.value.src_notify_master_rx_lower_pri is defined
   tags:
     - keepalived-config
-  notify:
-    - reload keepalived
+  register: masternotifyscriptschanged3
 
 - name: Dropping the notification scripts for switching to backup (instances)
   copy:
@@ -229,8 +218,7 @@
   when: item.value.src_notify_backup is defined
   tags:
     - keepalived-config
-  notify:
-    - reload keepalived
+  register: backupnotifyscriptschanged2
 
 - name: Dropping the notification scripts for stopping vrrp (instances)
   copy:
@@ -241,8 +229,7 @@
   when: item.value.src_notify_stop is defined
   tags:
     - keepalived-config
-  notify:
-    - reload keepalived
+  register: stopvrrpnotifyscriptschanged
 
 - name: Dropping the notification scripts for failures (instances)
   copy:
@@ -253,8 +240,7 @@
   when: item.value.src_notify_fault is defined
   tags:
     - keepalived-config
-  notify:
-    - reload keepalived
+  register: failurenotifyscriptschanged
 
 - name: Make directory for keepalived's systemd overrides
   file:
@@ -277,8 +263,7 @@
     - 'After'
   when:
     - keepalived_systemd_overrides | bool
-  notify:
-    - restart keepalived
+  register: overridechanged
 
 - name: Apply keepalived override to restart service always
   ini_file:
@@ -290,8 +275,7 @@
   when:
     - keepalived_systemd_overrides | bool
     - keepalived_systemd_override_service_restart | bool
-  notify:
-    - restart keepalived
+  register: overridechanged2
 
 - name: Remove keepalived overrides
   file:
@@ -340,3 +324,32 @@
     - isenabled is changed
   tags:
     - skip_ansible_lint
+
+- name: register service reload required
+  set_fact:
+    keepalived_service_state: reloaded
+  when: configchanged | default(false) or
+        checkscriptschanged | default(false) or
+        notifyscriptschanged | default(false) or
+        masternotifyscriptschanged | default(false) or
+        backupnotifyscriptschanged | default(false) or
+        failurenotifyscriptschanged | default(false) or
+        notifyscriptschanged2 | default(false) or
+        masternotifyscriptschanged2 | default(false) or
+        masternotifyscriptschanged3 | default(false) or
+        backupnotifyscriptschanged2 | default(false) or
+        stopvrrpnotifyscriptschanged | default(false) or
+        failurenotifyscriptschanged | default(false)  # noqa no-handler
+
+- name: register service restart required
+  set_fact:
+    keepalived_service_state: restarted
+  when: packagechanged | default(false) or
+        configchanged2 | default(false) or
+        overridechanged | default(false) or
+        overridechanged2 | default(false)  # noqa no-handler
+
+- name: ensure  service state is {{ keepalived_service_state | default('started') }}
+  service:
+    name: "{{ keepalived_service_name }}"
+    state: "{{ apache_service_state | default('started') }}"

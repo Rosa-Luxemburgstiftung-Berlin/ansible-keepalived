@@ -327,77 +327,77 @@
 
 - name: debug
   debug:
-    var: configchanged | default(false)
+    var: configchanged.changed | default(false)
 - name: debug
   debug:
-    var: checkscriptschanged | default(false)
+    var: checkscriptschanged.changed | default(false)
 - name: debug
   debug:
-    var: notifyscriptschanged | default(false)
+    var: notifyscriptschanged.changed | default(false)
 - name: debug
   debug:
-    var: masternotifyscriptschanged | default(false)
+    var: masternotifyscriptschanged.changed | default(false)
 - name: debug
   debug:
-    var: backupnotifyscriptschanged | default(false)
+    var: backupnotifyscriptschanged.changed | default(false)
 - name: debug
   debug:
-    var: failurenotifyscriptschanged | default(false)
+    var: failurenotifyscriptschanged.changed | default(false)
 - name: debug
   debug:
-    var: notifyscriptschanged2 | default(false)
+    var: notifyscriptschanged2.changed | default(false)
 - name: debug
   debug:
-    var: masternotifyscriptschanged2 | default(false)
+    var: masternotifyscriptschanged2.changed | default(false)
 - name: debug
   debug:
-    var: masternotifyscriptschanged3 | default(false)
+    var: masternotifyscriptschanged3.changed | default(false)
 - name: debug
   debug:
-    var: backupnotifyscriptschanged2 | default(false)
+    var: backupnotifyscriptschanged2.changed | default(false)
 - name: debug
   debug:
-    var: stopvrrpnotifyscriptschanged | default(false)
+    var: stopvrrpnotifyscriptschanged.changed | default(false)
 - name: debug
   debug:
-    var: failurenotifyscriptschanged | default(false)
+    var: failurenotifyscriptschanged.changed | default(false)
 - name: debug
   debug:
-    var: packagechanged | default(false)
+    var: packagechanged.changed | default(false)
 - name: debug
   debug:
-    var: configchanged2 | default(false)
+    var: configchanged2.changed | default(false)
 - name: debug
   debug:
-    var: overridechanged | default(false)
+    var: overridechanged.changed | default(false)
 - name: debug
   debug:
-    var: overridechanged2 | default(false)
+    var: overridechanged2.changed | default(false)
 
 
 - name: register service reload required
   set_fact:
     keepalived_service_state: reloaded
-  when: configchanged | default(false) or
-        checkscriptschanged | default(false) or
-        notifyscriptschanged | default(false) or
-        masternotifyscriptschanged | default(false) or
-        backupnotifyscriptschanged | default(false) or
-        failurenotifyscriptschanged | default(false) or
-        notifyscriptschanged2 | default(false) or
-        masternotifyscriptschanged2 | default(false) or
-        masternotifyscriptschanged3 | default(false) or
-        backupnotifyscriptschanged2 | default(false) or
-        stopvrrpnotifyscriptschanged | default(false) or
-        failurenotifyscriptschanged | default(false)  # noqa no-handler
+  when: configchanged.changed | default(false) or
+        checkscriptschanged.changed | default(false) or
+        notifyscriptschanged.changed | default(false) or
+        masternotifyscriptschanged.changed | default(false) or
+        backupnotifyscriptschanged.changed | default(false) or
+        failurenotifyscriptschanged.changed | default(false) or
+        notifyscriptschanged2.changed | default(false) or
+        masternotifyscriptschanged2.changed | default(false) or
+        masternotifyscriptschanged3.changed | default(false) or
+        backupnotifyscriptschanged2.changed | default(false) or
+        stopvrrpnotifyscriptschanged.changed | default(false) or
+        failurenotifyscriptschanged.changed | default(false)  # noqa no-handler
 
 - name: register service restart required
   set_fact:
     keepalived_service_state: restarted
-  when: packagechanged | default(false) or
-        configchanged2 | default(false) or
-        overridechanged | default(false) or
-        overridechanged2 | default(false)  # noqa no-handler
+  when: packagechanged.changed | default(false) or
+        configchanged2.changed | default(false) or
+        overridechanged.changed | default(false) or
+        overridechanged2.changed | default(false)  # noqa no-handler
 
 - name: ensure  service state is {{ keepalived_service_state | default('started') }}
   service:

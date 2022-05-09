@@ -353,5 +353,5 @@
   service:
     name: "{{ keepalived_service_name }}"
     state: "{{ apache_service_state | default('started') }}"
-#  tags:
-#    - "{% if ansible_distribution == 'CentOS' and ansible_lsb.major_release|int == 7 %}molecule-notest{% else %}okforallother{% endif %}"
+  tags:
+    - molecule-notest  # centos7 is always changed

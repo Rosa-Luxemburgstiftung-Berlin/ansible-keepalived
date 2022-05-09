@@ -325,38 +325,55 @@
   tags:
     - skip_ansible_lint
 
-- debug:
+- name: debug
+  debug:
     var: configchanged | default(false)
-- debug:
+- name: debug
+  debug:
     var: checkscriptschanged | default(false)
-- debug:
+- name: debug
+  debug:
     var: notifyscriptschanged | default(false)
-- debug:
+- name: debug
+  debug:
     var: masternotifyscriptschanged | default(false)
-- debug:
+- name: debug
+  debug:
     var: backupnotifyscriptschanged | default(false)
-- debug:
+- name: debug
+  debug:
     var: failurenotifyscriptschanged | default(false)
-- debug:
+- name: debug
+  debug:
     var: notifyscriptschanged2 | default(false)
-- debug:
+- name: debug
+  debug:
     var: masternotifyscriptschanged2 | default(false)
-- debug:
+- name: debug
+  debug:
     var: masternotifyscriptschanged3 | default(false)
-- debug:
+- name: debug
+  debug:
     var: backupnotifyscriptschanged2 | default(false)
-- debug:
+- name: debug
+  debug:
     var: stopvrrpnotifyscriptschanged | default(false)
-- debug:
+- name: debug
+  debug:
     var: failurenotifyscriptschanged | default(false)
-- debug:
+- name: debug
+  debug:
     var: packagechanged | default(false)
-- debug:
+- name: debug
+  debug:
     var: configchanged2 | default(false)
-- debug:
+- name: debug
+  debug:
     var: overridechanged | default(false)
-- debug:
+- name: debug
+  debug:
     var: overridechanged2 | default(false)
+
 
 - name: register service reload required
   set_fact:

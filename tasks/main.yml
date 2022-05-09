@@ -325,56 +325,6 @@
   tags:
     - skip_ansible_lint
 
-- name: debug
-  debug:
-    var: configchanged.changed | default(false)
-- name: debug
-  debug:
-    var: checkscriptschanged.changed | default(false)
-- name: debug
-  debug:
-    var: notifyscriptschanged.changed | default(false)
-- name: debug
-  debug:
-    var: masternotifyscriptschanged.changed | default(false)
-- name: debug
-  debug:
-    var: backupnotifyscriptschanged.changed | default(false)
-- name: debug
-  debug:
-    var: failurenotifyscriptschanged.changed | default(false)
-- name: debug
-  debug:
-    var: notifyscriptschanged2.changed | default(false)
-- name: debug
-  debug:
-    var: masternotifyscriptschanged2.changed | default(false)
-- name: debug
-  debug:
-    var: masternotifyscriptschanged3.changed | default(false)
-- name: debug
-  debug:
-    var: backupnotifyscriptschanged2.changed | default(false)
-- name: debug
-  debug:
-    var: stopvrrpnotifyscriptschanged.changed | default(false)
-- name: debug
-  debug:
-    var: failurenotifyscriptschanged.changed | default(false)
-- name: debug
-  debug:
-    var: packagechanged.changed | default(false)
-- name: debug
-  debug:
-    var: configchanged2.changed | default(false)
-- name: debug
-  debug:
-    var: overridechanged.changed | default(false)
-- name: debug
-  debug:
-    var: overridechanged2.changed | default(false)
-
-
 - name: register service reload required
   set_fact:
     keepalived_service_state: reloaded
@@ -403,3 +353,5 @@
   service:
     name: "{{ keepalived_service_name }}"
     state: "{{ apache_service_state | default('started') }}"
+  tags:
+    - "{% if ansible_distribution == 'CentOS' and ansible_lsb.major_release|int == 7 %}molecule-notest{% else %}okforallother{% endif %}"
